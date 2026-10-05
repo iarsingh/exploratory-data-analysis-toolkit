@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exploratory-data-analysis-toolkit
+  labels:
+    app: exploratory-data-analysis-toolkit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exploratory-data-analysis-toolkit
+  template:
+    metadata:
+      labels:
+        app: exploratory-data-analysis-toolkit
+    spec:
+      containers:
+        - name: api
+          image: exploratory-data-analysis-toolkit:local
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /v1/readyz
+              port: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: exploratory-data-analysis-toolkit
+spec:
+  selector:
+    app: exploratory-data-analysis-toolkit
+  ports:
+    - port: 80
+      targetPort: 8080
